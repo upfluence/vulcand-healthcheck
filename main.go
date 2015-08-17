@@ -88,7 +88,12 @@ func main() {
 		flags.Port,
 	)
 
-	healthCheck := NewHealthCheck(flags.Port, flags.Path, flags.Timeout)
+	healthCheck := NewHealthCheck(
+		flags.PrivateIP,
+		flags.Port,
+		flags.Path,
+		flags.Timeout,
+	)
 
 	sig := make(chan os.Signal)
 	signal.Notify(sig, os.Kill, os.Interrupt)

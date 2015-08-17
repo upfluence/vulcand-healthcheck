@@ -19,8 +19,8 @@ type HealthCheck struct {
 	timeout time.Duration
 }
 
-func NewHealthCheck(port uint, path string, timeout time.Duration) *HealthCheck {
-	url := fmt.Sprintf("http://localhost:%d", port)
+func NewHealthCheck(ipAddr string, port uint, path string, timeout time.Duration) *HealthCheck {
+	url := fmt.Sprintf("http://%s:%d", ipAddr, port)
 
 	if len(path) > 0 && path[0:1] == "/" {
 		url += path
