@@ -86,6 +86,7 @@ func main() {
 		flags.ServerID,
 		flags.PrivateIP,
 		flags.Port,
+		flags.Interval+flags.Timeout,
 	)
 
 	healthCheck := NewHealthCheck(

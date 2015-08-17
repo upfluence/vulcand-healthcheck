@@ -14,15 +14,18 @@ type Registry struct {
 	backendID string
 	serverID  string
 	url       string
+	ttl       time.Duration
 }
 
 func NewRegistry(
-	addr, backendID, serverID, ipAddress string, port uint) *Registry {
+	addr, backendID, serverID, ipAddress string, port uint,
+	ttl time.Duration) *Registry {
 	return &Registry{
 		api.NewClient(addr, registry.GetRegistry()),
 		backendID,
 		serverID,
 		fmt.Sprintf("http://%s:%d", ipAddress, port),
+		ttl,
 	}
 }
 
@@ -36,7 +39,7 @@ func (r *Registry) RegisterServer() error {
 	return r.client.UpsertServer(
 		engine.BackendKey{Id: r.backendID},
 		*s,
-		*new(time.Duration),
+		r.ttl,
 	)
 }
 func (r *Registry) DeleteServer() error {
