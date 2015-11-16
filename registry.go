@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mailgun/vulcand/api"
-	"github.com/mailgun/vulcand/engine"
-	"github.com/mailgun/vulcand/plugin/registry"
+	"github.com/vulcand/vulcand/api"
+	"github.com/vulcand/vulcand/engine"
+	"github.com/vulcand/vulcand/plugin/registry"
 )
 
 type Registry struct {
