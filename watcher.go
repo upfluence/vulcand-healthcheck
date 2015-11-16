@@ -51,6 +51,11 @@ func (w *Watcher) Watch() {
 
 			w.history = append(w.history, r)
 
+			if len(w.history) > int(w.unhealthyThreshold) &&
+				len(w.history) > int(w.healthyThreshold) {
+				w.history = w.history[1:]
+			}
+
 			if w.shouldDeleteServer() {
 				err := w.registry.DeleteServer()
 
@@ -80,9 +85,7 @@ func (w *Watcher) shouldRegisterServer() bool {
 		return false
 	}
 
-	lastSlice := w.history[len(w.history)-int(w.healthyThreshold) : len(w.history)-1]
-
-	for _, status := range lastSlice {
+	for _, status := range w.history {
 		if status == Unhealthy {
 			return false
 		}
@@ -96,9 +99,7 @@ func (w *Watcher) shouldDeleteServer() bool {
 		return false
 	}
 
-	lastSlice := w.history[len(w.history)-int(w.unhealthyThreshold) : len(w.history)-1]
-
-	for _, status := range lastSlice {
+	for _, status := range w.history {
 		if status == Healthy {
 			return false
 		}
