@@ -15,8 +15,8 @@ const (
 type Status int
 
 type HealthCheck struct {
-	url     string
-	timeout time.Duration
+	url    string
+	client *http.Client
 }
 
 func NewHealthCheck(ipAddr string, port uint, path string, timeout time.Duration) *HealthCheck {
@@ -28,28 +28,13 @@ func NewHealthCheck(ipAddr string, port uint, path string, timeout time.Duration
 		url += "/" + path
 	}
 
-	return &HealthCheck{url, timeout}
+	return &HealthCheck{url, &http.Client{Timeout: timeout}}
 }
 
 func (h *HealthCheck) Ping() Status {
-	responseChan := make(chan Status)
-
-	go func() {
-		responseChan <- h.ping()
-	}()
-
-	select {
-	case <-time.After(h.timeout):
-		return Unhealthy
-	case s := <-responseChan:
-		return s
-	}
-}
-
-func (h *HealthCheck) ping() Status {
 	log.Printf("Fetching: %s", h.url)
 	// TODO: Be able to choose the HTTP method
-	r, err := http.Get(h.url)
+	r, err := h.client.Get(h.url)
 
 	if err != nil {
 		log.Printf(err.Error())
