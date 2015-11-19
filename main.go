@@ -45,7 +45,7 @@ func init() {
 	flagset.BoolVar(&flags.Version, "v", false, "Print the version and exit")
 
 	flagset.UintVar(&flags.Port, "port", 80, "Port exposed by the service")
-	flagset.StringVar(&flags.Path, "path", "/", "Path hitted to assert if the service is healthy or not (should return a 2XX status code)")
+	flagset.StringVar(&flags.Path, "path", "/", "Path hit to check the service healthiness (should return a 2XX status code)")
 	flagset.DurationVar(&flags.Timeout, "timeout", 2*time.Second, "Time to wait when receiving a response from the health check")
 	flagset.DurationVar(&flags.Interval, "interval", 5*time.Second, "Amount of time between health checks")
 	flagset.UintVar(&flags.UnhealthyThreshold, "unhealthy-threshold", 2, "Number of consecutive health check failures before declaring the service unhealthy.")
