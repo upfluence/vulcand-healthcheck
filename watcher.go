@@ -56,13 +56,17 @@ func (w *Watcher) Watch() {
 				w.history = w.history[1:]
 			}
 
+			log.Printf("Health history: %+v", w.history)
+
 			if w.shouldDeleteServer() {
+				log.Println("Will unregister the server")
 				err := w.registry.DeleteServer()
 
 				if err != nil {
 					log.Printf("DeleteServer: %s", err.Error())
 				}
 			} else if w.shouldRegisterServer() {
+				log.Println("Will register the server")
 				err := w.registry.RegisterServer()
 
 				if err != nil {

@@ -37,12 +37,13 @@ func (h *HealthCheck) Ping() Status {
 	r, err := h.client.Get(h.url)
 
 	if err != nil {
-		log.Printf(err.Error())
+		log.Printf("HTTP healthcheck error: %s", err.Error())
 		return Unhealthy
 	}
 
 	// TODO: Maybe accept other status codes
 	if r.StatusCode/100 == 2 {
+		log.Printf("HTTP healthcheck status code: %d", r.StatusCode)
 		return Healthy
 	}
 
