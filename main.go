@@ -7,6 +7,10 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/upfluence/vulcand-healthcheck/healthcheck"
+	"github.com/upfluence/vulcand-healthcheck/registry"
+	"github.com/upfluence/vulcand-healthcheck/watcher"
 )
 
 const currentVersion = "0.0.1"
@@ -80,7 +84,7 @@ func main() {
 		vulcandURL = v
 	}
 
-	registry := NewRegistry(
+	registry := registry.NewRegistry(
 		vulcandURL,
 		flags.BackendID,
 		flags.ServerID,
@@ -89,7 +93,7 @@ func main() {
 		flags.Interval+flags.Timeout,
 	)
 
-	healthCheck := NewHealthCheck(
+	healthCheck := healthcheck.NewHealthCheck(
 		flags.PrivateIP,
 		flags.Port,
 		flags.Path,
@@ -97,11 +101,11 @@ func main() {
 	)
 
 	sig := make(chan os.Signal)
-	signal.Notify(sig, os.Kill, os.Interrupt)
+	signal.Notify(sig, os.Interrupt)
 
 	stopChan := make(chan bool)
 
-	watcher := NewWatcher(
+	watcher := watcher.NewWatcher(
 		healthCheck,
 		registry,
 		flags.Interval,
