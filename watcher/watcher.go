@@ -1,25 +1,28 @@
-package main
+package watcher
 
 import (
 	"log"
 	"time"
+
+	"github.com/upfluence/vulcand-healthcheck/healthcheck"
+	"github.com/upfluence/vulcand-healthcheck/registry"
 )
 
 type Watcher struct {
-	registry           *Registry
-	healthCheck        *HealthCheck
+	registry           *registry.Registry
+	healthCheck        *healthcheck.HealthCheck
 	interval           time.Duration
 	stopChan           chan bool
 	healthyThreshold   uint
 	unhealthyThreshold uint
 
-	history      []Status
+	history      []healthcheck.Status
 	isRegistered bool
 }
 
 func NewWatcher(
-	healthCheck *HealthCheck,
-	registry *Registry,
+	healthCheck *healthcheck.HealthCheck,
+	registry *registry.Registry,
 	interval time.Duration,
 	healthyThreshold, unhealthyThreshold uint,
 	stopChan chan bool) *Watcher {
@@ -30,7 +33,7 @@ func NewWatcher(
 		stopChan,
 		healthyThreshold,
 		unhealthyThreshold,
-		[]Status{},
+		[]healthcheck.Status{},
 		false,
 	}
 }
@@ -43,7 +46,7 @@ func (w *Watcher) Watch() {
 
 			r := w.healthCheck.Ping()
 
-			if r == Healthy {
+			if r == healthcheck.Healthy {
 				log.Println("The service is healthy")
 			} else {
 				log.Println("The service is not healthy")
@@ -90,7 +93,7 @@ func (w *Watcher) shouldRegisterServer() bool {
 	}
 
 	for _, status := range w.history {
-		if status == Unhealthy {
+		if status == healthcheck.Unhealthy {
 			return false
 		}
 	}
@@ -104,7 +107,7 @@ func (w *Watcher) shouldDeleteServer() bool {
 	}
 
 	for _, status := range w.history {
-		if status == Healthy {
+		if status == healthcheck.Healthy {
 			return false
 		}
 	}
