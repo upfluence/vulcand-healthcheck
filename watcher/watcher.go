@@ -5,11 +5,15 @@ import (
 	"time"
 
 	"github.com/upfluence/vulcand-healthcheck/healthcheck"
-	"github.com/upfluence/vulcand-healthcheck/registry"
 )
 
+type Registry interface {
+	RegisterServer() error
+	DeleteServer() error
+}
+
 type Watcher struct {
-	registry           *registry.Registry
+	registry           Registry
 	healthCheck        *healthcheck.HealthCheck
 	interval           time.Duration
 	stopChan           chan bool
@@ -22,7 +26,7 @@ type Watcher struct {
 
 func NewWatcher(
 	healthCheck *healthcheck.HealthCheck,
-	registry *registry.Registry,
+	registry Registry,
 	interval time.Duration,
 	healthyThreshold, unhealthyThreshold uint,
 	stopChan chan bool) *Watcher {
