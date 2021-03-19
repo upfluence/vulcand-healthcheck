@@ -84,14 +84,16 @@ func main() {
 		vulcandURL = v
 	}
 
-	registry := registry.NewRegistry(
-		vulcandURL,
-		flags.BackendID,
-		flags.ServerID,
-		flags.PrivateIP,
-		flags.Port,
-		flags.Interval+flags.Timeout,
-	)
+	registry := &registry.ConnFlusher{
+		Next: registry.NewRegistry(
+			vulcandURL,
+			flags.BackendID,
+			flags.ServerID,
+			flags.PrivateIP,
+			flags.Port,
+			flags.Interval+flags.Timeout,
+		),
+	}
 
 	healthCheck := healthcheck.NewHealthCheck(
 		flags.PrivateIP,
